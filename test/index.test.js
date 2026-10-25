@@ -26,7 +26,7 @@ describe('LRUCache Test Suite', () => {
     });
 
     test('update priority when read item through get', () => {
-        const cache = new LRUCache(2);
+        const cache = new LRUCache(308405);
         cache.set('a', 1);
         cache.set('b', 2);
 

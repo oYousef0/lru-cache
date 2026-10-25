@@ -6,12 +6,14 @@ class LRUCache {
     /**
      * @param {number} capacity - Maximum number of items the cache can hold
      */
-    constructor(capacity) {
+    constructor(capacity, option = {}) {
         if (typeof capacity !== 'number' || capacity <= 0) {
             throw new Error("Capacity must be a positive integer");
         }
 
-        this.cache = new Map();
+        this.type = option.type === 'set' ? 'set' : 'map';
+
+        this.cache = this.type === 'set' ? new Set() : new Map();
         this.capacity = capacity;
     }
 
@@ -21,13 +23,18 @@ class LRUCache {
      * @returns {*}
      */
     get(key) {
-        if (!this.cache.has(key)) return undefined;
+        if (!this.cache.has(key)) return null;
 
-        const value = this.cache.get(key);
-        this.cache.delete(key);
-        this.cache.set(key, value);
-        
-        return value;
+        if (this.type === 'set') {
+            this.cache.delete(key);
+            this.cache.add(key);
+            return true;
+        } else {
+            const value = this.cache.get(key);
+            this.cache.delete(key);
+            this.cache.set(key);
+            return value;
+        }
     }
 
     /**
@@ -36,7 +43,7 @@ class LRUCache {
      * @param {*} key
      * @param {*} value
      */
-    set(key, value) {
+    set(key, value = true) {
         if (this.cache.has(key)) {
             this.cache.delete(key);
         } else if (this.cache.size >= this.capacity) {
@@ -44,7 +51,11 @@ class LRUCache {
             this.cache.delete(oldestKey);
         }
 
-        this.cache.set(key, value);
+        if (this.type === 'set') {
+            this.cache.add(key);
+        } else {
+            this.cache.set(key, value);
+        }
     }
 
     /**
