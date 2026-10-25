@@ -32,7 +32,7 @@ class LRUCache {
         } else {
             const value = this.cache.get(key);
             this.cache.delete(key);
-            this.cache.set(key);
+            this.cache.set(key, value);
             return value;
         }
     }
